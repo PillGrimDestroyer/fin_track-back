@@ -1,0 +1,37 @@
+version: "3.9"
+
+
+networks:
+  default:
+    external: true
+    name: defender_default
+
+services:
+
+  postgres:
+    image: postgres:14.0
+    container_name: rise_security_postgres
+    restart: unless-stopped
+    ports:
+      - "12432:5432"
+    environment:
+      POSTGRES_PASSWORD: "111"
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+
+  request-defender:
+    image: hawk6884/request-defender:0.0.1
+    container_name: request-defender
+    restart: unless-stopped
+    ports:
+      - "9090:8080"
+    volumes:
+      - ./volumes/request-defender.d:/root/request-defender.d
+    environment:
+      DB_HOST: "rise_security_postgres"
+      DB_PORT: "5432"
+      DB_NAME: "request_defender"
+      DB_USER: "request_defender"
+      DB_PASS: "111"
+      SECRET_DAYS: "1"
