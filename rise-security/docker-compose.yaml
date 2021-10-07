@@ -1,5 +1,10 @@
 version: "3.9"
 
+networks:
+  default:
+    external: true
+    name: defender_default
+
 services:
 
   postgres:
