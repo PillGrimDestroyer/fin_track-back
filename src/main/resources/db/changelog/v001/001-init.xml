@@ -10,7 +10,16 @@
             drop table if exists users;;
             create table users
             (
-                
+                id            varchar(36),
+                email         varchar(512),
+                password      text,
+                first_name    varchar(256),
+                last_name     varchar(256),
+                role          varchar(512),
+                status        varchar(512),
+                registered_at timestamp default now(),
+
+                primary key (id)
             );;
             ]]></sql>
     </changeSet>
