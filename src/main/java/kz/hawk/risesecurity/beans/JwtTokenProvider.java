@@ -48,7 +48,7 @@ public class JwtTokenProvider {
   public boolean validateToken(String token) {
     try {
       Jws<Claims> claimsJws = Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token);
-      return !claimsJws.getBody().getExpiration().before(new Date());
+      return claimsJws.getBody().getExpiration().after(new Date());
     } catch (JwtException | IllegalArgumentException e) {
       throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
     }
