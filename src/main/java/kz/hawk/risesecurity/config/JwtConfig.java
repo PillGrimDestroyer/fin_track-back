@@ -19,8 +19,13 @@ public interface JwtConfig {
   String header();
 
   @Description("Продолжительность валидности токена (в секундах)")
-  @DefaultLongValue(604800) // 7 дней
+  @DefaultLongValue(1800) // 30 минут
   @FirstReadEnv("JWT_VALID_TIME")
   long validTime();
+
+  @Description("Продолжительность валидности рефреш токена (в секундах)")
+  @DefaultLongValue(604800) // 7 дней
+  @FirstReadEnv("JWT_REFRESH_VALID_TIME")
+  long refreshValidTime();
 
 }

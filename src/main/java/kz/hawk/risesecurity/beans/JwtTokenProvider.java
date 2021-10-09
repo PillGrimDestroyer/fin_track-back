@@ -6,6 +6,7 @@ import kz.hawk.risesecurity.config.JwtConfig;
 import kz.hawk.risesecurity.exception.JwtAuthenticationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,18 +32,12 @@ public class JwtTokenProvider {
     encodedSecretKey = Base64.getEncoder().encodeToString(jwtConfig.secretKey().getBytes());
   }
 
-  public String createToken(String username, String role) {
-    Claims claims = Jwts.claims().setSubject(username);
-    claims.put("role", role);
-    Date now      = new Date();
-    Date validity = new Date(now.getTime() + jwtConfig.validTime() * 1000);
+  public String createToken(String username, @Nullable String role) {
+    return createToken(username, role, jwtConfig.validTime());
+  }
 
-    return Jwts.builder()
-               .setClaims(claims)
-               .setIssuedAt(now)
-               .setExpiration(validity)
-               .signWith(SignatureAlgorithm.HS256, encodedSecretKey)
-               .compact();
+  public String createRefreshToken(String username) {
+    return createToken(username, null, jwtConfig.refreshValidTime());
   }
 
   public boolean validateToken(String token) {
@@ -65,6 +60,24 @@ public class JwtTokenProvider {
 
   public String resolveToken(HttpServletRequest request) {
     return request.getHeader(jwtConfig.header());
+  }
+
+  private String createToken(String username, @Nullable String role, long validTime) {
+    var claims = Jwts.claims().setSubject(username);
+
+    if (role != null) {
+      claims.put("role", role);
+    }
+
+    var now      = new Date();
+    var validity = new Date(now.getTime() + validTime * 1000);
+
+    return Jwts.builder()
+               .setClaims(claims)
+               .setIssuedAt(now)
+               .setExpiration(validity)
+               .signWith(SignatureAlgorithm.HS256, encodedSecretKey)
+               .compact();
   }
 
 }
