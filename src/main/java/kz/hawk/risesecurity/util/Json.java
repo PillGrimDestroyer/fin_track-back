@@ -1,6 +1,7 @@
 package kz.hawk.risesecurity.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,6 +25,15 @@ public class Json {
 
   public static <T> T toObject(String json, Class<T> clazz) throws JsonProcessingException {
     return getFriendlyObjectMapper().readValue(json, clazz);
+  }
+
+  public static <T> T toObject(String json, TypeReference<T> clazz) throws JsonProcessingException {
+    return getFriendlyObjectMapper().readValue(json, clazz);
+  }
+
+  public static <T> TypeReference<T> toTypeReference(T obj) {
+    return new TypeReference<>() {
+    };
   }
 
 }

@@ -20,4 +20,14 @@ public interface RequestDefenderConfig {
   @FirstReadEnv("REQUEST_DEFENDER_PORT")
   int port();
 
+  @Description("Заголовок в котором хранится зашифрованное тело запроса")
+  @DefaultStrValue("Security")
+  @FirstReadEnv("REQUEST_DEFENDER_SECURITY_HEADER")
+  String securityHeader();
+
+  @Description("Заголовк в котором хранится токен запроса, полученые от 'request-defender'")
+  @DefaultStrValue("RequestToken")
+  @FirstReadEnv("REQUEST_DEFENDER_TOKEN_HEADER")
+  String requestTokenHeader();
+
 }

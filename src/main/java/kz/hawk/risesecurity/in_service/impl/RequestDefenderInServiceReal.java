@@ -2,7 +2,9 @@ package kz.hawk.risesecurity.in_service.impl;
 
 import kz.hawk.risesecurity.in_service.RequestDefenderInService;
 import kz.hawk.risesecurity.model.in_service.RequestOptionsInService;
+import kz.hawk.risesecurity.model.in_service.request.CheckRequestInService;
 import kz.hawk.risesecurity.model.in_service.request.PrepareRequestInService;
+import kz.hawk.risesecurity.model.in_service.response.CheckResponseInService;
 import kz.hawk.risesecurity.model.in_service.response.PrepareResponseInService;
 import kz.hawk.risesecurity.util.Json;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,22 @@ public class RequestDefenderInServiceReal implements RequestDefenderInService {
       .addHeader("Content-Type", "application/json")
       .build();
 
-    return Json.toObject(checkAndReadResponse(makeCall(request)), PrepareResponseInService.class);
+    return Json.toObject(makeCall(request), PrepareResponseInService.class);
+  }
+
+  @SneakyThrows
+  @Override
+  public CheckResponseInService check(CheckRequestInService requestData) {
+    var url = getBaseUrlBuilder();
+    url.addPathSegment("request_check");
+
+    var request = new Request.Builder()
+      .url(url.build())
+      .post(RequestBody.create(Json.toJson(requestData), JSON))
+      .addHeader("Content-Type", "application/json")
+      .build();
+
+    return Json.toObject(makeCall(request), CheckResponseInService.class);
   }
 
   private String checkAndReadResponse(Response res) {
@@ -65,9 +82,9 @@ public class RequestDefenderInServiceReal implements RequestDefenderInService {
       .addPathSegment("secret");
   }
 
-  private Response makeCall(Request request) {
+  private String makeCall(Request request) {
     try (var execute = this.httpClient.newCall(request).execute()) {
-      return execute;
+      return checkAndReadResponse(execute);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
