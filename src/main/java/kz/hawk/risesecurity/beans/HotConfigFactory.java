@@ -3,6 +3,7 @@ package kz.hawk.risesecurity.beans;
 import kz.greetgo.conf.hot.FileConfigFactory;
 import kz.hawk.risesecurity.config.DbConfig;
 import kz.hawk.risesecurity.config.JwtConfig;
+import kz.hawk.risesecurity.config.RequestDefenderConfig;
 import kz.hawk.risesecurity.util.App;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,11 @@ public class HotConfigFactory extends FileConfigFactory {
   @Bean
   public JwtConfig jwtConfig() {
     return createConfig(JwtConfig.class);
+  }
+
+  @Bean
+  public RequestDefenderConfig requestDefenderConfig() {
+    return createConfig(RequestDefenderConfig.class);
   }
 
 }
