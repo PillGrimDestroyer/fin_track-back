@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/security")
 @RequiredArgsConstructor
@@ -17,13 +19,8 @@ public class SecurityController {
 
   @PostMapping("/prepare")
   public @ResponseBody
-  ResponseEntity<?> prepare(@RequestBody PrepareRequestInService request) {
-    try {
-      return ResponseEntity.ok(requestDefenderInService.prepare(request));
-    } catch (Exception e) {
-      log.error(e.getLocalizedMessage(), e);
-      return ResponseEntity.internalServerError().body(null);
-    }
+  ResponseEntity<?> prepare(@Valid @RequestBody PrepareRequestInService request) {
+    return ResponseEntity.ok(requestDefenderInService.prepare(request));
   }
 
 }

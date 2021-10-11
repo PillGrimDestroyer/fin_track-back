@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -23,7 +23,7 @@ public class AuthorizeController {
   private final AuthorizeRegister authorizeRegister;
 
   @PostMapping("/login")
-  public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
+  public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest request) {
     try {
       return ResponseEntity.ok(authorizeRegister.authenticate(request));
     } catch (AuthenticationException e) {
@@ -33,7 +33,7 @@ public class AuthorizeController {
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<?> refreshToken(HttpServletRequest request) {
     try {
       return ResponseEntity.ok(authorizeRegister.refreshToken(request));
     } catch (AuthenticationException e) {
