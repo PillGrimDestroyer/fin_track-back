@@ -1,4 +1,4 @@
-package kz.hawk.risesecurity.model.in_service.request;
+package kz.hawk.risesecurity.model.request;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.math.BigInteger;
 
 @Data
 @Builder
-public class PrepareRequestInService {
+public class PrepareRequest {
 
   @NotNull(message = "The 'a' is required")
   @Min(value = 1, message = "The 'a' is must be greater or equal 1")

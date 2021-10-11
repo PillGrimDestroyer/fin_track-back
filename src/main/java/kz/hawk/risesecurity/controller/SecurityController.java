@@ -1,7 +1,7 @@
 package kz.hawk.risesecurity.controller;
 
 import kz.hawk.risesecurity.in_service.RequestDefenderInService;
-import kz.hawk.risesecurity.model.in_service.request.PrepareRequestInService;
+import kz.hawk.risesecurity.model.request.PrepareRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class SecurityController {
 
   @PostMapping("/prepare")
   public @ResponseBody
-  ResponseEntity<?> prepare(@Valid @RequestBody PrepareRequestInService request) {
+  ResponseEntity<?> prepare(@Valid @RequestBody PrepareRequest request) {
     return ResponseEntity.ok(requestDefenderInService.prepare(request));
   }
 

@@ -3,9 +3,9 @@ package kz.hawk.risesecurity.in_service.impl;
 import kz.hawk.risesecurity.in_service.RequestDefenderInService;
 import kz.hawk.risesecurity.model.in_service.RequestOptionsInService;
 import kz.hawk.risesecurity.model.in_service.request.CheckRequestInService;
-import kz.hawk.risesecurity.model.in_service.request.PrepareRequestInService;
+import kz.hawk.risesecurity.model.request.PrepareRequest;
 import kz.hawk.risesecurity.model.in_service.response.CheckResponseInService;
-import kz.hawk.risesecurity.model.in_service.response.PrepareResponseInService;
+import kz.hawk.risesecurity.model.response.PrepareResponse;
 import kz.hawk.risesecurity.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,7 +25,7 @@ public class RequestDefenderInServiceReal implements RequestDefenderInService {
 
   @SneakyThrows
   @Override
-  public PrepareResponseInService prepare(PrepareRequestInService requestData) {
+  public PrepareResponse prepare(PrepareRequest requestData) {
     var url = getBaseUrlBuilder();
     url.addPathSegment("prepare");
 
@@ -35,7 +35,7 @@ public class RequestDefenderInServiceReal implements RequestDefenderInService {
       .addHeader("Content-Type", "application/json")
       .build();
 
-    return Json.toObject(makeCall(request), PrepareResponseInService.class);
+    return Json.toObject(makeCall(request), PrepareResponse.class);
   }
 
   @SneakyThrows

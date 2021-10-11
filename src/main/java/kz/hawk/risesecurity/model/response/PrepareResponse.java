@@ -1,4 +1,4 @@
-package kz.hawk.risesecurity.model.in_service.response;
+package kz.hawk.risesecurity.model.response;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.util.UUID;
 
 @Data
-public class PrepareResponseInService {
+public class PrepareResponse {
   private UUID       id;
   private BigInteger serverResult;
 }
