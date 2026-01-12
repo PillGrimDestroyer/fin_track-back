@@ -1,9 +1,7 @@
 package kz.hawk.fintrack.util;
 
+import kz.hawk.fintrack.dao.UserDao;
 import kz.hawk.fintrack.dao.UserDaoTest;
-import kz.hawk.fintrack.model.dao.UserDto;
-import kz.hawk.fintrack.model.enums.Role;
-import kz.hawk.fintrack.model.enums.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.util.IdGenerator;
 import org.testng.annotations.BeforeMethod;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest
@@ -27,6 +27,9 @@ public class ParentTestNG extends AbstractTestNGSpringContextTests {
   @Autowired
   private UserDaoTest userDaoTest;
 
+  @Autowired
+  private UserDao userDao;
+
   @BeforeMethod
   public void beforeRunTest() {
 
@@ -39,17 +42,27 @@ public class ParentTestNG extends AbstractTestNGSpringContextTests {
 
   @Test
   public void createUser() {
-    UserDto user = new UserDto();
+    String email = "test@test.test";
 
-    user.setId(idGenerator.generateId());
-    user.setEmail("test@test.test");
-    user.setRole(Role.USER);
-    user.setPassword(passwordEncoder.encode("test"));
-    user.setStatus(Status.ACTIVE);
-    user.setFirstName("test");
-    user.setLastName("testov");
+    userDaoTest.saveUser(
+        email,
+        passwordEncoder.encode("test"),
+        "test",
+        "testov"
+    );
 
-    userDaoTest.saveUser(user);
+    //
+    //
+    var realUser = userDao.getByEmail(email);
+    //
+    //
+
+    System.out.println();
+    System.out.print("Real user: ");
+    System.out.println(realUser);
+    System.out.println();
+
+    assertThat(realUser).isNotNull();
   }
 
 }

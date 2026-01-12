@@ -13,7 +13,7 @@ import java.util.UUID;
 public class UserDto {
   private UUID   id;
   private String email;
-  private String password;
+  private String passwordHash;
   private String firstName;
   private String lastName;
   private Role   role;
@@ -24,7 +24,7 @@ public class UserDto {
   public UserDetails toUserDetails() {
     return new User(
       email,
-      password,
+      passwordHash,
       Status.ACTIVE.equals(status),
       Status.ACTIVE.equals(status),
       Status.ACTIVE.equals(status),

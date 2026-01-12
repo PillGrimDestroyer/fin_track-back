@@ -33,6 +33,7 @@ public class RequestDefenderFilter extends OncePerRequestFilter {
   private void init() {
     excludeUrls.addAll(Arrays.asList(FREE_ACCESS_URLS));
     excludeUrls.add("/security/prepare");
+    excludeUrls.add("/authorize/refresh");
   }
 
   @Override
