@@ -1,0 +1,14 @@
+package kz.hawk.fintrack.annotations;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@PreAuthorize("hasAuthority(T(kz.hawk.fintrack.model.enums.Permission).ADMIN.getPermission())")
+public @interface AdminPermission {
+
+}

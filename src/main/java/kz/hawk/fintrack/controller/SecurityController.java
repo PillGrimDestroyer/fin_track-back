@@ -1,0 +1,26 @@
+package kz.hawk.fintrack.controller;
+
+import kz.hawk.fintrack.in_service.RequestDefenderInService;
+import kz.hawk.fintrack.model.request.PrepareRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/security")
+@RequiredArgsConstructor
+@Slf4j
+public class SecurityController {
+
+  private final RequestDefenderInService requestDefenderInService;
+
+  @PostMapping("/prepare")
+  public @ResponseBody
+  ResponseEntity<?> prepare(@Valid @RequestBody PrepareRequest request) {
+    return ResponseEntity.ok(requestDefenderInService.prepare(request));
+  }
+
+}

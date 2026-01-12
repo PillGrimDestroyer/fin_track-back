@@ -73,13 +73,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-task clearPort8080 {
-    doLast {
-        exec {
-            workingDir '.'
-            commandLine 'sh', '/home/hawk/kill_by_port.sh', '8080'
-            ignoreExitValue true
-        }
-    }
-}
