@@ -25,7 +25,8 @@ import java.util.Collections;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   public static final String[] FREE_ACCESS_URLS = {
-    "/authorize/login"
+    "/authorize/login",
+    "/authorize/check-email-exists",
   };
 
   private final JwtConfigurer jwtConfigurer;

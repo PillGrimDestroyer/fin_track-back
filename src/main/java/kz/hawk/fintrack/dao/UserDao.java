@@ -11,4 +11,9 @@ public interface UserDao {
   )
   UserDto getByEmail(@Param("email") String email);
 
+  @Select(
+    "select exists(select 1 from users where email = #{email})"
+  )
+  boolean checkEmailExists(@Param("email") String email);
+
 }

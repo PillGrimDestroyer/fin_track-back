@@ -12,4 +12,6 @@ public interface AuthorizeRegister {
   AuthenticationResponse refreshToken(HttpServletRequest request) throws AuthenticationException;
 
   AuthenticationResponse refreshToken(String email) throws AuthenticationException;
+
+  boolean checkEmailExists(String email);
 }

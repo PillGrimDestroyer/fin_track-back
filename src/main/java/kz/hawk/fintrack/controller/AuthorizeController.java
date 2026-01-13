@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.Optional;
 
 @RestController
@@ -37,6 +38,12 @@ public class AuthorizeController {
       var msg = Optional.ofNullable(e.getMessage()).orElse("Invalid email/password combination");
       return new ResponseEntity<>(msg, HttpStatus.FORBIDDEN);
     }
+  }
+
+  @GetMapping("/check-email-exists")
+  //todo Must return response model
+  public boolean checkEmailExists(@RequestParam @NotEmpty String email) {
+    return authorizeRegister.checkEmailExists(email);
   }
 
 }

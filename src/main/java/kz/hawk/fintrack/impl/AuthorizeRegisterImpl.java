@@ -65,4 +65,9 @@ public class AuthorizeRegisterImpl implements AuthorizeRegister {
     return resp;
   }
 
+  @Override
+  public boolean checkEmailExists(String email) {
+    return userDao.checkEmailExists(email);
+  }
+
 }
