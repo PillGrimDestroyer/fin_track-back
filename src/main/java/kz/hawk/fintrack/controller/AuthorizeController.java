@@ -1,5 +1,6 @@
 package kz.hawk.fintrack.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kz.hawk.fintrack.model.request.AuthenticationRequest;
 import kz.hawk.fintrack.model.request.RegisterRequest;
 import kz.hawk.fintrack.model.response.AuthenticationResponse;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.Optional;

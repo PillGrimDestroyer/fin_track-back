@@ -1,11 +1,11 @@
 package kz.hawk.fintrack;
 
+import jakarta.annotation.PreDestroy;
 import kz.hawk.fintrack.beans.ApplicationFinisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.annotation.PreDestroy;
 
 @SpringBootApplication
 @RequiredArgsConstructor

@@ -1,5 +1,9 @@
 package kz.hawk.fintrack.filter;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kz.hawk.fintrack.config.RequestDefenderConfig;
 import kz.hawk.fintrack.in_service.RequestDefenderInService;
 import kz.hawk.fintrack.model.in_service.request.CheckRequestInService;
@@ -10,10 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;

@@ -1,5 +1,6 @@
 package kz.hawk.fintrack.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kz.hawk.fintrack.beans.JwtTokenProvider;
 import kz.hawk.fintrack.dao.UserDao;
 import kz.hawk.fintrack.exception.JwtAuthenticationException;
@@ -18,7 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @Component

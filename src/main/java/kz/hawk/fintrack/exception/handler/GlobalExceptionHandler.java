@@ -1,9 +1,10 @@
 package kz.hawk.fintrack.exception.handler;
 
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,7 +23,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
     @NotNull MethodArgumentNotValidException ex,
     @NotNull HttpHeaders headers,
-    @NotNull HttpStatus status,
+    @NotNull HttpStatusCode status,
     @NotNull WebRequest request
   ) {
     var body = new HashMap<String, List<String>>();

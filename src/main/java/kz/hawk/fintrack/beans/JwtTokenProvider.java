@@ -2,6 +2,8 @@ package kz.hawk.fintrack.beans;
 
 
 import io.jsonwebtoken.*;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import kz.hawk.fintrack.config.JwtConfig;
 import kz.hawk.fintrack.exception.JwtAuthenticationException;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 
@@ -42,7 +42,7 @@ public class JwtTokenProvider {
 
   public boolean validateToken(String token) {
     try {
-      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token);
+      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(encodedSecretKey).build().parseClaimsJws(token);
       return claimsJws.getBody().getExpiration().after(new Date());
     } catch (JwtException | IllegalArgumentException e) {
       throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
@@ -55,7 +55,7 @@ public class JwtTokenProvider {
   }
 
   public String getUsername(String token) {
-    return Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token).getBody().getSubject();
+    return Jwts.parser().setSigningKey(encodedSecretKey).build().parseClaimsJws(token).getBody().getSubject();
   }
 
   public String resolveToken(HttpServletRequest request) {
@@ -63,19 +63,19 @@ public class JwtTokenProvider {
   }
 
   private String createToken(String username, @Nullable String role, long validTime) {
-    var claims = Jwts.claims().setSubject(username);
+    var claims = Jwts.claims().subject(username);
 
     if (role != null) {
-      claims.put("role", role);
+      claims.add("role", role);
     }
 
     var now      = new Date();
     var validity = new Date(now.getTime() + validTime * 1000);
 
     return Jwts.builder()
-               .setClaims(claims)
-               .setIssuedAt(now)
-               .setExpiration(validity)
+               .claims(claims.build())
+               .issuedAt(now)
+               .expiration(validity)
                .signWith(SignatureAlgorithm.HS256, encodedSecretKey)
                .compact();
   }
