@@ -2,8 +2,10 @@ package kz.hawk.fintrack.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kz.hawk.fintrack.beans.JwtTokenProvider;
+import kz.hawk.fintrack.dao.CategoryDao;
 import kz.hawk.fintrack.dao.UserDao;
 import kz.hawk.fintrack.exception.JwtAuthenticationException;
+import kz.hawk.fintrack.model.dao.CategoryDto;
 import kz.hawk.fintrack.model.dao.UserDto;
 import kz.hawk.fintrack.model.enums.Role;
 import kz.hawk.fintrack.model.request.AuthenticationRequest;
@@ -18,6 +20,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,7 @@ public class AuthorizeRegisterImpl implements AuthorizeRegister {
   private final UserDao               userDao;
   private final JwtTokenProvider      jwtTokenProvider;
   private final PasswordEncoder       passwordEncoder;
+  private final CategoryDao           categoryDao;
 
   @Override
   public AuthenticationResponse authenticate(AuthenticationRequest request) throws AuthenticationException {
@@ -77,21 +81,25 @@ public class AuthorizeRegisterImpl implements AuthorizeRegister {
   }
 
   @Override
+  @Transactional
   public UserDto register(RegisterRequest request) {
     var role = Role.USER;
+    var user = new UserDto();
 
-    userDao.createUser(
-      request.getEmail(),
-      passwordEncoder.encode(request.getPassword()),
-      request.getFirstName(),
-      request.getLastName(),
-      role
-    );
+    user.setEmail(request.getEmail());
+    user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+    user.setRole(role);
+    user.setFirstName(request.getFirstName());
+    user.setLastName(request.getLastName());
 
-    return userDao.getByEmail(request.getEmail());
+    userDao.insertUser(user);
+    createDefaultCategories(user);
+
+    return user;
   }
 
   @Override
+  @Transactional
   public AuthenticationResponse registerThenAuthenticate(RegisterRequest request) {
     register(request);
 
@@ -101,6 +109,19 @@ public class AuthorizeRegisterImpl implements AuthorizeRegister {
     authenticationRequest.setPassword(request.getPassword());
 
     return authenticate(authenticationRequest);
+  }
+
+  private void createDefaultCategories(UserDto user) {
+    List<CategoryDto> defaults = List.of(
+      new CategoryDto("Продукты", "Groceries", "bi-cart", user),
+      new CategoryDto("Транспорт", "Transport", "bi-car-front", user),
+      new CategoryDto("Жилье", "Housing", "bi-house", user),
+      new CategoryDto("Развлечения", "Leisure", "bi-controller", user)
+    );
+
+    for (CategoryDto cat : defaults) {
+      categoryDao.createCategory(cat);
+    }
   }
 
 }

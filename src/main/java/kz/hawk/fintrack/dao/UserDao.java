@@ -1,11 +1,9 @@
 package kz.hawk.fintrack.dao;
 
 import kz.hawk.fintrack.model.dao.UserDto;
-import kz.hawk.fintrack.model.enums.Role;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
+@Mapper
 public interface UserDao {
 
   @Select(
@@ -18,14 +16,10 @@ public interface UserDao {
   )
   boolean checkEmailExists(@Param("email") String email);
 
-
   @Insert("insert into users " +
     "(email, password_hash, first_name, last_name, role) " +
-    "values (#{email}, #{passwordHash}, #{firstName}, #{lastName}, #{role});")
-  void createUser(@Param("email") String email,
-                  @Param("passwordHash") String passwordHash,
-                  @Param("firstName") String firstName,
-                  @Param("lastName") String lastName,
-                  @Param("role") Role role);
+    "values (#{email}, #{passwordHash}, #{firstName}, #{lastName}, #{role})")
+  @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+  void insertUser(UserDto user);
 
 }
