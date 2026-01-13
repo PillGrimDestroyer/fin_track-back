@@ -2,11 +2,13 @@ package kz.hawk.fintrack.beans;
 
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import kz.hawk.fintrack.config.JwtConfig;
 import kz.hawk.fintrack.exception.JwtAuthenticationException;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 
@@ -25,11 +28,12 @@ public class JwtTokenProvider {
   private final UserDetailsService userDetailsService;
   private final JwtConfig          jwtConfig;
 
-  private String encodedSecretKey;
+  private SecretKey encodedSecretKey;
 
   @PostConstruct
   protected void init() {
-    encodedSecretKey = Base64.getEncoder().encodeToString(jwtConfig.secretKey().getBytes());
+    val secretKey = Jwts.SIG.HS256.key().build();
+    encodedSecretKey = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(jwtConfig.secretKey().getBytes()).getBytes());
   }
 
   public String createToken(String username, @Nullable String role) {

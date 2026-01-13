@@ -9,7 +9,7 @@ import kz.greetgo.conf.hot.FirstReadEnv;
 public interface JwtConfig {
 
   @Description("Секретный ключ для шифрования токена")
-  @DefaultStrValue("test")
+  @DefaultStrValue("The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size)")
   @FirstReadEnv("JWT_SECRET_KEY")
   String secretKey();
 

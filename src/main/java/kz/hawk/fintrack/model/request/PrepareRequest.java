@@ -1,7 +1,6 @@
 package kz.hawk.fintrack.model.request;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
@@ -9,7 +8,6 @@ import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
 
 @Data
-@Builder
 public class PrepareRequest {
 
   @NotNull(message = "The 'a' is required")
