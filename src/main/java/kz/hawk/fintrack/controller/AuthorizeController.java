@@ -1,6 +1,8 @@
 package kz.hawk.fintrack.controller;
 
 import kz.hawk.fintrack.model.request.AuthenticationRequest;
+import kz.hawk.fintrack.model.request.RegisterRequest;
+import kz.hawk.fintrack.model.response.AuthenticationResponse;
 import kz.hawk.fintrack.register.AuthorizeRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,11 @@ public class AuthorizeController {
   //todo Must return response model
   public boolean checkEmailExists(@RequestParam @NotEmpty String email) {
     return authorizeRegister.checkEmailExists(email);
+  }
+
+  @PostMapping("/register-then-authenticate")
+  public AuthenticationResponse register(@Valid @RequestBody RegisterRequest request) {
+    return authorizeRegister.registerThenAuthenticate(request);
   }
 
 }

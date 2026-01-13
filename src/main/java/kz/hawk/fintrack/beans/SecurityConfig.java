@@ -27,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public static final String[] FREE_ACCESS_URLS = {
     "/authorize/login",
     "/authorize/check-email-exists",
+    "/authorize/register-then-authenticate",
   };
 
   private final JwtConfigurer jwtConfigurer;
