@@ -15,7 +15,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -58,8 +57,8 @@ public class JwtTokenProvider {
   }
 
   public Authentication getAuthentication(String token) {
-    UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
-    return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    UserDto.UserDetails userDetails = (UserDto.UserDetails) this.userDetailsService.loadUserByUsername(getUsername(token));
+    return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
   }
 
   public String getUsername(String token) {
@@ -67,7 +66,7 @@ public class JwtTokenProvider {
   }
 
   public String resolveToken(HttpServletRequest request) {
-    return request.getHeader(jwtConfig.header());
+    return request.getHeader(jwtConfig.header()).substring("Bearer ".length());
   }
 
   public UUID getCurrentUserId() {
@@ -75,9 +74,9 @@ public class JwtTokenProvider {
 
     return Optional.ofNullable(authentication)
                    .map(Authentication::getPrincipal)
-                   .filter(UserDto.class::isInstance)
-                   .map(UserDto.class::cast)
-                   .map(UserDto::getId)
+                   .filter(UserDto.UserDetails.class::isInstance)
+                   .map(UserDto.UserDetails.class::cast)
+                   .map(UserDto.UserDetails::getId)
                    .orElseThrow(() -> new JwtAuthenticationException("JWT token is invalid", HttpStatus.UNAUTHORIZED));
   }
 

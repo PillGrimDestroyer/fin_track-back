@@ -1,5 +1,6 @@
 package kz.hawk.fintrack.beans;
 
+import kz.hawk.fintrack.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -32,7 +34,7 @@ public class SecurityConfig {
     "/authorize/register-then-authenticate",
   };
 
-  private final JwtConfigurer jwtConfigurer;
+  private final JwtTokenFilter jwtTokenFilter;
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
@@ -49,7 +51,7 @@ public class SecurityConfig {
         x.requestMatchers(FREE_ACCESS_URLS).permitAll();
         x.anyRequest().authenticated();
       })
-      .apply(jwtConfigurer);
+      .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }

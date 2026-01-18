@@ -26,4 +26,5 @@ public class TransactionController {
   public void addTransaction(@Valid @RequestBody TransactionRequest request) {
     transactionRegister.addTransaction(request);
   }
+
 }

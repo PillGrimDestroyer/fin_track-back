@@ -9,9 +9,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
+
+import static kz.hawk.fintrack.beans.SecurityConfig.FREE_ACCESS_URLS;
 
 
 @Component
@@ -19,6 +25,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
   private final JwtTokenProvider jwtTokenProvider;
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    String path = request.getRequestURI();
+
+    return Arrays.stream(FREE_ACCESS_URLS).anyMatch(Predicate.isEqual(path));
+  }
 
   @SneakyThrows
   @Override
@@ -34,22 +47,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
 
         if (authentication != null) {
-          SecurityContextHolder.getContext().setAuthentication(authentication);
+          SecurityContext context = SecurityContextHolder.createEmptyContext();
+          context.setAuthentication(authentication);
+          SecurityContextHolder.setContext(context);
         }
       }
 
       filterChain.doFilter(request, response);
     } catch (JwtAuthenticationException e) {
       SecurityContextHolder.clearContext();
-      response.sendError(e.getHttpStatus().value());
+      response.sendError(e.getHttpStatus().value(), e.getMessage());
 
       logger.error(e.getMessage());
-
-      try {
-        filterChain.doFilter(request, response);
-      } catch (Exception ignore) {
-        // ignore
-      }
     }
   }
 

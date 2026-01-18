@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kz.hawk.fintrack.config.RequestDefenderConfig;
 import kz.hawk.fintrack.in_service.RequestDefenderInService;
+import kz.hawk.fintrack.model.MultiReadHttpServletRequestWrapper;
 import kz.hawk.fintrack.model.in_service.request.CheckRequestInService;
 import kz.hawk.fintrack.util.Json;
 import lombok.RequiredArgsConstructor;
@@ -50,19 +51,20 @@ public class RequestDefenderFilter extends OncePerRequestFilter {
     @NotNull HttpServletResponse response,
     @NotNull FilterChain filterChain
   ) {
+    var    requestWrapper = new MultiReadHttpServletRequestWrapper(request);
     String body;
 
-    if ("post".equalsIgnoreCase(request.getMethod())) {
-      body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+    if ("post".equalsIgnoreCase(requestWrapper.getMethod())) {
+      body = requestWrapper.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
       body = body.isBlank() ? "{}" : body;
     } else {
-      body = Json.toJson(request.getParameterMap());
+      body = Json.toJson(requestWrapper.getParameterMap());
     }
 
     try {
       var mapBody        = Json.toObject(body, Json.toTypeReference(new HashMap<String, Object>()));
-      var securityHeader = getHeaderOrThrow(requestDefenderConfig.securityHeader(), request);
-      var tokenHeader    = getHeaderOrThrow(requestDefenderConfig.requestTokenHeader(), request);
+      var securityHeader = getHeaderOrThrow(requestDefenderConfig.securityHeader(), requestWrapper);
+      var tokenHeader    = getHeaderOrThrow(requestDefenderConfig.requestTokenHeader(), requestWrapper);
 
       var checkRequest = CheckRequestInService.builder()
                                               .header(securityHeader)
@@ -76,7 +78,7 @@ public class RequestDefenderFilter extends OncePerRequestFilter {
         throw new RuntimeException(checkResponse.getErrorMsg());
       }
 
-      filterChain.doFilter(request, response);
+      filterChain.doFilter(requestWrapper, response);
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getLocalizedMessage());
 
