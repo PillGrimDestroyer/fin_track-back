@@ -43,4 +43,24 @@
             ]]></sql>
     </changeSet>
 
+    <changeSet author="rshmidt" id="18012026-001">
+        <sql endDelimiter=";;" splitStatements="true"> <![CDATA[
+            drop table if exists transactions;;
+            create table transactions
+            (
+                id               uuid primary key      default gen_random_uuid(),
+                amount           decimal      not null,
+                type             varchar(128) not null,
+                description      text,
+                transaction_date timestamp    not null default now(),
+
+                user_id          uuid         not null references users (id),
+                category_id      uuid         not null references categories (id),
+
+                updated_at       timestamp    not null default now(),
+                created_at       timestamp    not null default now()
+            );;
+            ]]></sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -7,12 +7,14 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import kz.hawk.fintrack.config.JwtConfig;
 import kz.hawk.fintrack.exception.JwtAuthenticationException;
+import kz.hawk.fintrack.model.dao.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -64,6 +68,17 @@ public class JwtTokenProvider {
 
   public String resolveToken(HttpServletRequest request) {
     return request.getHeader(jwtConfig.header());
+  }
+
+  public UUID getCurrentUserId() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    return Optional.ofNullable(authentication)
+                   .map(Authentication::getPrincipal)
+                   .filter(UserDto.class::isInstance)
+                   .map(UserDto.class::cast)
+                   .map(UserDto::getId)
+                   .orElseThrow(() -> new JwtAuthenticationException("JWT token is invalid", HttpStatus.UNAUTHORIZED));
   }
 
   private String createToken(String username, @Nullable String role, long validTime) {
