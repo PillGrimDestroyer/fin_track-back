@@ -14,15 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -67,17 +64,6 @@ public class JwtTokenProvider {
 
   public String resolveToken(HttpServletRequest request) {
     return request.getHeader(jwtConfig.header()).substring("Bearer ".length());
-  }
-
-  public UUID getCurrentUserId() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    return Optional.ofNullable(authentication)
-                   .map(Authentication::getPrincipal)
-                   .filter(UserDto.UserDetails.class::isInstance)
-                   .map(UserDto.UserDetails.class::cast)
-                   .map(UserDto.UserDetails::getId)
-                   .orElseThrow(() -> new JwtAuthenticationException("JWT token is invalid", HttpStatus.UNAUTHORIZED));
   }
 
   private String createToken(String username, @Nullable String role, long validTime) {

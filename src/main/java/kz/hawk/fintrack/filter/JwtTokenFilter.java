@@ -5,11 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kz.hawk.fintrack.beans.JwtTokenProvider;
 import kz.hawk.fintrack.exception.JwtAuthenticationException;
+import kz.hawk.fintrack.register.SessionRegister;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,6 +25,7 @@ import static kz.hawk.fintrack.beans.SecurityConfig.FREE_ACCESS_URLS;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
   private final JwtTokenProvider jwtTokenProvider;
+  private final SessionRegister  sessionRegister;
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -47,9 +48,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
 
         if (authentication != null) {
-          SecurityContext context = SecurityContextHolder.createEmptyContext();
-          context.setAuthentication(authentication);
-          SecurityContextHolder.setContext(context);
+          sessionRegister.create(authentication);
         }
       }
 

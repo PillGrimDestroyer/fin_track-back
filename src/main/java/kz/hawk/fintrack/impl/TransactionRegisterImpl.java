@@ -1,12 +1,12 @@
 package kz.hawk.fintrack.impl;
 
 
-import kz.hawk.fintrack.beans.JwtTokenProvider;
 import kz.hawk.fintrack.dao.TransactionDao;
 import kz.hawk.fintrack.model.dao.CategoryDto;
 import kz.hawk.fintrack.model.dao.TransactionDto;
 import kz.hawk.fintrack.model.dao.UserDto;
 import kz.hawk.fintrack.model.request.TransactionRequest;
+import kz.hawk.fintrack.register.SessionRegister;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TransactionRegisterImpl implements TransactionRegister {
 
-  private final TransactionDao   transactionDao;
-  private final JwtTokenProvider jwtTokenProvider;
+  private final TransactionDao  transactionDao;
+  private final SessionRegister sessionRegister;
 
   @Override
   public void addTransaction(TransactionRequest request) {
@@ -35,7 +35,7 @@ public class TransactionRegisterImpl implements TransactionRegister {
     transaction.setCategory(category);
 
     UserDto user = new UserDto();
-    user.setId(jwtTokenProvider.getCurrentUserId());
+    user.setId(sessionRegister.currentUserId());
     transaction.setUser(user);
 
     transactionDao.insert(transaction);
