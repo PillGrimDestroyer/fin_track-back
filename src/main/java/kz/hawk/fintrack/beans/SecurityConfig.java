@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -34,7 +35,8 @@ public class SecurityConfig {
     "/authorize/register-then-authenticate",
   };
 
-  private final JwtTokenFilter jwtTokenFilter;
+  private final JwtTokenFilter           jwtTokenFilter;
+  private final AuthenticationEntryPoint authenticationEntryPoint;
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
@@ -51,6 +53,7 @@ public class SecurityConfig {
         x.requestMatchers(FREE_ACCESS_URLS).permitAll();
         x.anyRequest().authenticated();
       })
+      .exceptionHandling(x -> x.authenticationEntryPoint(authenticationEntryPoint))
       .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();

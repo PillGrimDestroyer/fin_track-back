@@ -9,6 +9,7 @@ import kz.hawk.fintrack.register.SessionRegister;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -44,7 +45,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     String token = jwtTokenProvider.resolveToken(request);
 
     try {
-      if (token != null && jwtTokenProvider.validateToken(token)) {
+      if (token == null || token.isBlank()) {
+        throw new JwtAuthenticationException("Need to be authorized for this request", HttpStatus.UNAUTHORIZED);
+      }
+
+      if (jwtTokenProvider.validateToken(token)) {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
 
         if (authentication != null) {

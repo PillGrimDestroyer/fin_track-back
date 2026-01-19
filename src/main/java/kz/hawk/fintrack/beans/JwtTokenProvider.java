@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -63,7 +64,10 @@ public class JwtTokenProvider {
   }
 
   public String resolveToken(HttpServletRequest request) {
-    return request.getHeader(jwtConfig.header()).substring("Bearer ".length());
+    return Optional.ofNullable(request.getHeader(jwtConfig.header()))
+                   .filter(x -> !x.isBlank())
+                   .map(x -> x.substring("Bearer ".length()))
+                   .orElse(null);
   }
 
   private String createToken(String username, @Nullable String role, long validTime) {
