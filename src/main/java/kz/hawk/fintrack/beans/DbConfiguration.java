@@ -12,7 +12,7 @@ import org.springframework.util.IdGenerator;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackageClasses = BeanConfigDao.class)
+@MapperScan(basePackageClasses = BeanConfigDao.class, lazyInitialization = "true")
 public class DbConfiguration {
 
   @Autowired

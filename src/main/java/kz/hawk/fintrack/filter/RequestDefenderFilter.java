@@ -77,13 +77,12 @@ public class RequestDefenderFilter extends OncePerRequestFilter {
       if (!checkResponse.isValid()) {
         throw new RuntimeException(checkResponse.getErrorMsg());
       }
-
-      filterChain.doFilter(requestWrapper, response);
     } catch (Exception e) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getLocalizedMessage());
-
-      logger.error(e.getMessage());
+      logger.error(e.getMessage(), e);
+      throw e;
     }
+
+    filterChain.doFilter(requestWrapper, response);
   }
 
   private String getHeaderOrThrow(String headerName, HttpServletRequest request) {

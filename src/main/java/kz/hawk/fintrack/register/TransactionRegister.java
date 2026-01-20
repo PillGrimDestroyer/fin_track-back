@@ -2,6 +2,9 @@ package kz.hawk.fintrack.register;
 
 
 import kz.hawk.fintrack.model.request.TransactionRequest;
+import kz.hawk.fintrack.model.response.RecentTransactionResponse;
+
+import java.util.List;
 
 /**
  * @author megam
@@ -11,4 +14,5 @@ public interface TransactionRegister {
 
   void addTransaction(TransactionRequest request);
 
+  List<RecentTransactionResponse> recent();
 }

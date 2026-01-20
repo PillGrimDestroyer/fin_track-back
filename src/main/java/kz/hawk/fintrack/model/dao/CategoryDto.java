@@ -2,6 +2,9 @@ package kz.hawk.fintrack.model.dao;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.UUID;
@@ -11,16 +14,16 @@ import java.util.UUID;
  * @since 13.01.2026 14:45
  */
 @Data
+@NoArgsConstructor
 public class CategoryDto {
   private UUID    id;
   private String  nameRu;
   private String  nameEn;
   private String  icon;
   private Date    createdAt;
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private UserDto user;
-
-  public CategoryDto() {
-  }
 
   public CategoryDto(String nameRu, String nameEn, String icon, UserDto user) {
     this.nameRu = nameRu;

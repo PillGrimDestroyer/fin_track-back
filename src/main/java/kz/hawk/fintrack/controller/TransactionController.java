@@ -2,14 +2,13 @@ package kz.hawk.fintrack.controller;
 
 
 import kz.hawk.fintrack.model.request.TransactionRequest;
+import kz.hawk.fintrack.model.response.RecentTransactionResponse;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author megam
@@ -25,6 +24,11 @@ public class TransactionController {
   @PostMapping
   public void addTransaction(@Valid @RequestBody TransactionRequest request) {
     transactionRegister.addTransaction(request);
+  }
+
+  @GetMapping("/recent")
+  public List<RecentTransactionResponse> recent() {
+    return transactionRegister.recent();
   }
 
 }

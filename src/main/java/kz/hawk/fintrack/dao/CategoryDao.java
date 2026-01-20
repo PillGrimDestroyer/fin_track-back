@@ -2,9 +2,8 @@ package kz.hawk.fintrack.dao;
 
 
 import kz.hawk.fintrack.model.dao.CategoryDto;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,5 +23,13 @@ public interface CategoryDao {
   @Select(
     "select * from categories where user_id = #{userId}"
   )
+  @Results(id = "categoryResultMap", value = {
+    @Result(column = "id", property = "id", id = true),
+    @Result(column = "name_ru", property = "nameRu"),
+    @Result(column = "name_en", property = "nameEn"),
+    @Result(column = "icon", property = "icon"),
+    @Result(column = "created_at", property = "createdAt"),
+    @Result(column = "user_id", property = "user", one = @One(select = "kz.hawk.fintrack.dao.UserDao.getById", fetchType = FetchType.LAZY))
+  })
   List<CategoryDto> getAllByUserId(@Param("userId") UUID userId);
 }

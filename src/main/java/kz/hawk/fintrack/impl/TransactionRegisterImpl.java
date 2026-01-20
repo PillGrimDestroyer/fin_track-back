@@ -6,10 +6,15 @@ import kz.hawk.fintrack.model.dao.CategoryDto;
 import kz.hawk.fintrack.model.dao.TransactionDto;
 import kz.hawk.fintrack.model.dao.UserDto;
 import kz.hawk.fintrack.model.request.TransactionRequest;
+import kz.hawk.fintrack.model.response.RecentTransactionResponse;
 import kz.hawk.fintrack.register.SessionRegister;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author megam
@@ -39,6 +44,14 @@ public class TransactionRegisterImpl implements TransactionRegister {
     transaction.setUser(user);
 
     transactionDao.insert(transaction);
+  }
+
+  @Override
+  @Transactional
+  public List<RecentTransactionResponse> recent() {
+    return transactionDao.last10ByUserId(sessionRegister.currentUserId()).stream()
+                         .map(RecentTransactionResponse::fromDto)
+                         .collect(Collectors.toList());
   }
 
 }
