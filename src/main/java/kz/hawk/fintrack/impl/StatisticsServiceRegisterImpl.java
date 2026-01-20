@@ -2,7 +2,7 @@ package kz.hawk.fintrack.impl;
 
 
 import kz.hawk.fintrack.dao.StatisticsDao;
-import kz.hawk.fintrack.model.enums.Transaction;
+import kz.hawk.fintrack.model.response.BalanceSummaryResponse;
 import kz.hawk.fintrack.model.response.SpendByCategoryResponse;
 import kz.hawk.fintrack.register.SessionRegister;
 import kz.hawk.fintrack.register.StatisticsServiceRegister;
@@ -24,7 +24,12 @@ public class StatisticsServiceRegisterImpl implements StatisticsServiceRegister 
 
   @Override
   public List<SpendByCategoryResponse> spendByCategory() {
-    return statisticsDao.spendByCategory(sessionRegister.currentUserId(), Transaction.EXPENSE);
+    return statisticsDao.spendByCategory(sessionRegister.currentUserId());
+  }
+
+  @Override
+  public BalanceSummaryResponse balanceSummary() {
+    return statisticsDao.balanceSummary(sessionRegister.currentUserId());
   }
 
 }

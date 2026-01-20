@@ -1,6 +1,7 @@
 package kz.hawk.fintrack.controller;
 
 
+import kz.hawk.fintrack.model.response.BalanceSummaryResponse;
 import kz.hawk.fintrack.model.response.SpendByCategoryResponse;
 import kz.hawk.fintrack.register.StatisticsServiceRegister;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,11 @@ public class StatisticsController {
   @GetMapping("/spend-by-category")
   public @ResponseBody List<SpendByCategoryResponse> spendByCategory() {
     return statisticsService.spendByCategory();
+  }
+
+  @GetMapping("/balance-summary")
+  public @ResponseBody BalanceSummaryResponse balanceSummary() {
+    return statisticsService.balanceSummary();
   }
 
 }

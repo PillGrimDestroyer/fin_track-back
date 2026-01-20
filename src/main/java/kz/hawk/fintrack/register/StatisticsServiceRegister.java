@@ -1,6 +1,7 @@
 package kz.hawk.fintrack.register;
 
 
+import kz.hawk.fintrack.model.response.BalanceSummaryResponse;
 import kz.hawk.fintrack.model.response.SpendByCategoryResponse;
 
 import java.util.List;
@@ -10,5 +11,9 @@ import java.util.List;
  * @since 20.01.2026 13:27
  */
 public interface StatisticsServiceRegister {
+
   List<SpendByCategoryResponse> spendByCategory();
+
+  BalanceSummaryResponse balanceSummary();
+
 }
