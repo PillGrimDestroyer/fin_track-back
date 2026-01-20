@@ -27,7 +27,7 @@ public class TransactionController {
   }
 
   @GetMapping("/recent")
-  public List<RecentTransactionResponse> recent() {
+  public @ResponseBody List<RecentTransactionResponse> recent() {
     return transactionRegister.recent();
   }
 
