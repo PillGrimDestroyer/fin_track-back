@@ -3,6 +3,7 @@ package kz.hawk.fintrack.dao;
 
 import kz.hawk.fintrack.model.response.BalanceSummaryResponse;
 import kz.hawk.fintrack.model.response.SpendByCategoryResponse;
+import kz.hawk.fintrack.model.response.WeeklySpendingResponse;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -37,4 +38,26 @@ public interface StatisticsDao {
           WHERE user_id = #{userId}
           """)
   BalanceSummaryResponse balanceSummary(@Param("userId") UUID uuid);
+
+  @Select("""
+          WITH days AS (
+                  SELECT date_trunc('day', d) as day
+                  FROM generate_series(
+                      date_trunc('week', now()),
+                      date_trunc('week', now()) + interval '6 days',
+                      interval '1 day'
+                  ) d
+              )
+          SELECT
+              days.day as date,
+              COALESCE(SUM(t.amount), 0) as amount
+          FROM days
+          LEFT JOIN transactions t ON days.day = date_trunc('day', t.transaction_date)
+              AND t.type = 'EXPENSE'
+              AND t.user_id = #{userId}
+          GROUP BY days.day
+          ORDER BY days.day
+          """)
+  List<WeeklySpendingResponse> weeklySpending(@Param("userId") UUID userId);
+
 }

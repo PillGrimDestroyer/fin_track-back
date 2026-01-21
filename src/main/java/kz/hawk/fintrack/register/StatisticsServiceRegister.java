@@ -3,6 +3,7 @@ package kz.hawk.fintrack.register;
 
 import kz.hawk.fintrack.model.response.BalanceSummaryResponse;
 import kz.hawk.fintrack.model.response.SpendByCategoryResponse;
+import kz.hawk.fintrack.model.response.WeeklySpendingResponse;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface StatisticsServiceRegister {
   List<SpendByCategoryResponse> spendByCategory();
 
   BalanceSummaryResponse balanceSummary();
+
+  List<WeeklySpendingResponse> weeklySpending();
 
 }

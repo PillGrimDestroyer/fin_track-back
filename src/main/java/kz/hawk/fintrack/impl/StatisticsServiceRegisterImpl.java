@@ -4,6 +4,7 @@ package kz.hawk.fintrack.impl;
 import kz.hawk.fintrack.dao.StatisticsDao;
 import kz.hawk.fintrack.model.response.BalanceSummaryResponse;
 import kz.hawk.fintrack.model.response.SpendByCategoryResponse;
+import kz.hawk.fintrack.model.response.WeeklySpendingResponse;
 import kz.hawk.fintrack.register.SessionRegister;
 import kz.hawk.fintrack.register.StatisticsServiceRegister;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,11 @@ public class StatisticsServiceRegisterImpl implements StatisticsServiceRegister 
   @Override
   public BalanceSummaryResponse balanceSummary() {
     return statisticsDao.balanceSummary(sessionRegister.currentUserId());
+  }
+
+  @Override
+  public List<WeeklySpendingResponse> weeklySpending() {
+    return statisticsDao.weeklySpending(sessionRegister.currentUserId());
   }
 
 }

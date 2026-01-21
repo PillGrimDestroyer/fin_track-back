@@ -3,6 +3,7 @@ package kz.hawk.fintrack.controller;
 
 import kz.hawk.fintrack.model.response.BalanceSummaryResponse;
 import kz.hawk.fintrack.model.response.SpendByCategoryResponse;
+import kz.hawk.fintrack.model.response.WeeklySpendingResponse;
 import kz.hawk.fintrack.register.StatisticsServiceRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,11 @@ public class StatisticsController {
   @GetMapping("/balance-summary")
   public @ResponseBody BalanceSummaryResponse balanceSummary() {
     return statisticsService.balanceSummary();
+  }
+
+  @GetMapping("/weekly-spending")
+  public @ResponseBody List<WeeklySpendingResponse> weeklySpending() {
+    return statisticsService.weeklySpending();
   }
 
 }
