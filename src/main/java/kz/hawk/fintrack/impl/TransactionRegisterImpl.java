@@ -2,11 +2,12 @@ package kz.hawk.fintrack.impl;
 
 
 import kz.hawk.fintrack.dao.TransactionDao;
+import kz.hawk.fintrack.mapper.TransactionMapper;
 import kz.hawk.fintrack.model.dao.CategoryDto;
 import kz.hawk.fintrack.model.dao.TransactionDto;
 import kz.hawk.fintrack.model.dao.UserDto;
 import kz.hawk.fintrack.model.request.TransactionRequest;
-import kz.hawk.fintrack.model.response.RecentTransactionResponse;
+import kz.hawk.fintrack.model.response.TransactionResponse;
 import kz.hawk.fintrack.register.SessionRegister;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TransactionRegisterImpl implements TransactionRegister {
 
-  private final TransactionDao  transactionDao;
-  private final SessionRegister sessionRegister;
+  private final TransactionDao    transactionDao;
+  private final SessionRegister   sessionRegister;
+  private final TransactionMapper transactionMapper;
 
   @Override
   public void addTransaction(TransactionRequest request) {
@@ -48,9 +50,9 @@ public class TransactionRegisterImpl implements TransactionRegister {
 
   @Override
   @Transactional
-  public List<RecentTransactionResponse> recent() {
-    return transactionDao.last10ByUserId(sessionRegister.currentUserId()).stream()
-                         .map(RecentTransactionResponse::fromDto)
+  public List<TransactionResponse> recent() {
+    return transactionDao.limitedSearch(sessionRegister.currentUserId(), null, null, null, null, null, null, 10, 0).stream()
+                         .map(transactionMapper::toResponse)
                          .collect(Collectors.toList());
   }
 

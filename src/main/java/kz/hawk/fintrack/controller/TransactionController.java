@@ -2,7 +2,7 @@ package kz.hawk.fintrack.controller;
 
 
 import kz.hawk.fintrack.model.request.TransactionRequest;
-import kz.hawk.fintrack.model.response.RecentTransactionResponse;
+import kz.hawk.fintrack.model.response.TransactionResponse;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ public class TransactionController {
   }
 
   @GetMapping("/recent")
-  public @ResponseBody List<RecentTransactionResponse> recent() {
+  public @ResponseBody List<TransactionResponse> recent() {
     return transactionRegister.recent();
   }
 

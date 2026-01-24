@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -16,14 +16,14 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class CategoryDto {
-  private UUID    id;
-  private String  nameRu;
-  private String  nameEn;
-  private String  icon;
-  private Date    createdAt;
+  private UUID           id;
+  private String         nameRu;
+  private String         nameEn;
+  private String         icon;
+  private OffsetDateTime createdAt;
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
-  private UserDto user;
+  private UserDto        user;
 
   public CategoryDto(String nameRu, String nameEn, String icon, UserDto user) {
     this.nameRu = nameRu;

@@ -1,10 +1,9 @@
 package kz.hawk.fintrack.model.response;
 
 
-import kz.hawk.fintrack.model.dao.CategoryDto;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -14,21 +13,10 @@ import java.util.UUID;
 @Data
 public class CategoryResponse {
 
-  private UUID   id;
-  private String nameRu;
-  private String nameEn;
-  private String icon;
-  private Date   createdAt;
-
-
-  public static CategoryResponse fromDto(CategoryDto categoryDto) {
-    CategoryResponse response = new CategoryResponse();
-    response.id = categoryDto.getId();
-    response.nameRu = categoryDto.getNameRu();
-    response.nameEn = categoryDto.getNameEn();
-    response.icon = categoryDto.getIcon();
-    response.createdAt = categoryDto.getCreatedAt();
-    return response;
-  }
+  private UUID           id;
+  private String         nameRu;
+  private String         nameEn;
+  private String         icon;
+  private OffsetDateTime createdAt;
 
 }

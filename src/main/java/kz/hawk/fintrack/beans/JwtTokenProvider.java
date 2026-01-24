@@ -54,6 +54,7 @@ public class JwtTokenProvider {
     }
   }
 
+  //todo get it from token, not from DB
   public Authentication getAuthentication(String token) {
     UserDto.UserDetails userDetails = (UserDto.UserDetails) this.userDetailsService.loadUserByUsername(getUsername(token));
     return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -16,17 +16,17 @@ import java.util.UUID;
  */
 @Data
 public class TransactionDto {
-  private UUID          id;
-  private BigDecimal    amount;
-  private Transaction   type;
-  private String        description;
-  private LocalDateTime transactionDate;
+  private UUID           id;
+  private BigDecimal     amount;
+  private Transaction    type;
+  private String         description;
+  private OffsetDateTime transactionDate;
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
-  private UserDto       user;
+  private UserDto        user;
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
-  private CategoryDto   category;
-  private LocalDateTime updatedAt;
-  private LocalDateTime createdAt;
+  private CategoryDto    category;
+  private OffsetDateTime updatedAt;
+  private OffsetDateTime createdAt;
 }

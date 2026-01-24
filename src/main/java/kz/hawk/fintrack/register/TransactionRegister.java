@@ -2,7 +2,7 @@ package kz.hawk.fintrack.register;
 
 
 import kz.hawk.fintrack.model.request.TransactionRequest;
-import kz.hawk.fintrack.model.response.RecentTransactionResponse;
+import kz.hawk.fintrack.model.response.TransactionResponse;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface TransactionRegister {
 
   void addTransaction(TransactionRequest request);
 
-  List<RecentTransactionResponse> recent();
+  List<TransactionResponse> recent();
 }

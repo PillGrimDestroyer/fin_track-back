@@ -7,7 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -27,7 +27,7 @@ public class TransactionRequest {
   private String description;
 
   @NotNull(message = "'transactionDate' is required")
-  private LocalDateTime transactionDate;
+  private OffsetDateTime transactionDate;
 
   @NotNull(message = "'categoryId' is required")
   private UUID categoryId;

@@ -2,10 +2,16 @@ package kz.hawk.fintrack.dao;
 
 
 import kz.hawk.fintrack.model.dao.TransactionDto;
+import kz.hawk.fintrack.model.enums.Transaction;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,16 +29,26 @@ public interface TransactionDao {
   @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
   void insert(TransactionDto transaction);
 
-  @Select(
-    "select " +
-      "t.*, " +
-      "c.id as c_id, c.name_ru as c_name_ru, c.name_en as c_name_en, c.icon as c_icon, c.user_id as c_user_id, c.created_at as c_created_at " +
-      "from transactions t " +
-      "left join categories c on t.category_id = c.id " +
-      "where t.user_id = #{userId} " +
-      "order by t.transaction_date desc " +
-      "limit 10"
-  )
+  // &lt;= is <=
+  // &gt;= is >=
+  @Select("""
+          <script>
+          select t.*,
+                 c.id as c_id, c.name_ru as c_name_ru, c.name_en as c_name_en, c.icon as c_icon, c.user_id as c_user_id, c.created_at as c_created_at
+              from transactions t
+               left join categories c on c.id = t.category_id
+             where t.user_id = #{userId}
+          <if test="type != null">and t.type = #{type}</if>
+          <if test="description != null">and t.description like '%' || #{description} || '%'</if>
+          <if test="maxAmount != null">and t.amount &lt;= #{maxAmount}</if>
+          <if test="minAmount != null">and t.amount &gt;= #{minAmount}</if>
+          <if test="range != null">and t.transaction_date between #{range.key} and #{range.value}</if>
+          <if test="category != null">and c.name_en = #{category}</if>
+          order by t.transaction_date desc
+          limit #{limit}
+          offset #{offset}
+          </script>
+          """)
   @Results({
     @Result(column = "id", property = "id", id = true),
     @Result(column = "amount", property = "amount"),
@@ -44,6 +60,16 @@ public interface TransactionDao {
     @Result(column = "c_id", property = "category", one = @One(resultMap = "kz.hawk.fintrack.dao.CategoryDao.categoryResultMap", columnPrefix = "c_")),
     @Result(column = "user_id", property = "user", one = @One(select = "kz.hawk.fintrack.dao.UserDao.getById", fetchType = FetchType.LAZY))
   })
-  List<TransactionDto> last10ByUserId(@Param("userId") UUID userId);
+  List<TransactionDto> limitedSearch(
+    @Param("userId") @NotNull UUID userId,
+    @Param("type") @Nullable Transaction transactionType,
+    @Param("description") @Nullable String description,
+    @Param("maxAmount") @Nullable BigDecimal maxAmount,
+    @Param("minAmount") @Nullable BigDecimal minAmount,
+    @Param("range") @Nullable Map.Entry<OffsetDateTime, OffsetDateTime> transactionRange,
+    @Param("category") @Nullable String categoryNameEn,
+    @Param("limit") int limit,
+    @Param("offset") int offset
+  );
 
 }
