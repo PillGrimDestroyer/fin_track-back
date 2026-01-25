@@ -6,15 +6,18 @@ import kz.hawk.fintrack.mapper.TransactionMapper;
 import kz.hawk.fintrack.model.dao.CategoryDto;
 import kz.hawk.fintrack.model.dao.TransactionDto;
 import kz.hawk.fintrack.model.dao.UserDto;
+import kz.hawk.fintrack.model.request.TransactionFilteredDataSliceRequest;
 import kz.hawk.fintrack.model.request.TransactionRequest;
 import kz.hawk.fintrack.model.response.TransactionResponse;
 import kz.hawk.fintrack.register.SessionRegister;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -50,10 +53,27 @@ public class TransactionRegisterImpl implements TransactionRegister {
 
   @Override
   @Transactional
-  public List<TransactionResponse> recent() {
-    return transactionDao.limitedSearch(sessionRegister.currentUserId(), null, null, null, null, null, null, 10, 0).stream()
+  public List<TransactionResponse> filteredDataSlice(TransactionFilteredDataSliceRequest request) {
+    return transactionDao.filteredDataSlice(
+                           sessionRegister.currentUserId(),
+                           request.getTransactionType(),
+                           trimIfNotBlank(request.getDescription()),
+                           request.getMaxAmount(),
+                           request.getMinAmount(),
+                           request.getTransactionRange(),
+                           trimIfNotBlank(request.getCategoryNameEn()),
+                           request.getLimit(),
+                           request.getOffset()
+                         ).stream()
                          .map(transactionMapper::toResponse)
                          .collect(Collectors.toList());
+  }
+
+  private @Nullable String trimIfNotBlank(@Nullable String value) {
+    return Optional.ofNullable(value)
+                   .filter(x -> !x.isBlank())
+                   .map(String::trim)
+                   .orElse(null);
   }
 
 }

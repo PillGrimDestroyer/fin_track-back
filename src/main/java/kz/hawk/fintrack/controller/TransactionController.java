@@ -1,6 +1,7 @@
 package kz.hawk.fintrack.controller;
 
 
+import kz.hawk.fintrack.model.request.TransactionFilteredDataSliceRequest;
 import kz.hawk.fintrack.model.request.TransactionRequest;
 import kz.hawk.fintrack.model.response.TransactionResponse;
 import kz.hawk.fintrack.register.TransactionRegister;
@@ -26,9 +27,9 @@ public class TransactionController {
     transactionRegister.addTransaction(request);
   }
 
-  @GetMapping("/recent")
-  public @ResponseBody List<TransactionResponse> recent() {
-    return transactionRegister.recent();
+  @GetMapping("/filtered-data-slice")
+  public @ResponseBody List<TransactionResponse> filteredDataSlice(TransactionFilteredDataSliceRequest request) {
+    return transactionRegister.filteredDataSlice(request);
   }
 
 }

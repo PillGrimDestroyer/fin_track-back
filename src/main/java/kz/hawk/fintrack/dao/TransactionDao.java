@@ -60,7 +60,7 @@ public interface TransactionDao {
     @Result(column = "c_id", property = "category", one = @One(resultMap = "kz.hawk.fintrack.dao.CategoryDao.categoryResultMap", columnPrefix = "c_")),
     @Result(column = "user_id", property = "user", one = @One(select = "kz.hawk.fintrack.dao.UserDao.getById", fetchType = FetchType.LAZY))
   })
-  List<TransactionDto> limitedSearch(
+  List<TransactionDto> filteredDataSlice(
     @Param("userId") @NotNull UUID userId,
     @Param("type") @Nullable Transaction transactionType,
     @Param("description") @Nullable String description,

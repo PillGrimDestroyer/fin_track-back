@@ -1,6 +1,7 @@
 package kz.hawk.fintrack.register;
 
 
+import kz.hawk.fintrack.model.request.TransactionFilteredDataSliceRequest;
 import kz.hawk.fintrack.model.request.TransactionRequest;
 import kz.hawk.fintrack.model.response.TransactionResponse;
 
@@ -14,5 +15,5 @@ public interface TransactionRegister {
 
   void addTransaction(TransactionRequest request);
 
-  List<TransactionResponse> recent();
+  List<TransactionResponse> filteredDataSlice(TransactionFilteredDataSliceRequest request);
 }
