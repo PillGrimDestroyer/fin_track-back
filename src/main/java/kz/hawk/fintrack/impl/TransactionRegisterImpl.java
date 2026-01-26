@@ -60,7 +60,8 @@ public class TransactionRegisterImpl implements TransactionRegister {
                            trimIfNotBlank(request.getDescription()),
                            request.getMaxAmount(),
                            request.getMinAmount(),
-                           request.getTransactionRange(),
+                           request.getTransactionRangeFrom(),
+                           request.getTransactionRangeTo(),
                            trimIfNotBlank(request.getCategoryNameEn()),
                            request.getLimit(),
                            request.getOffset()

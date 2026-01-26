@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -31,6 +30,7 @@ public interface TransactionDao {
 
   // &lt;= is <=
   // &gt;= is >=
+  // &amp; is &
   @Select("""
           <script>
           select t.*,
@@ -42,7 +42,7 @@ public interface TransactionDao {
           <if test="description != null">and t.description like '%' || #{description} || '%'</if>
           <if test="maxAmount != null">and t.amount &lt;= #{maxAmount}</if>
           <if test="minAmount != null">and t.amount &gt;= #{minAmount}</if>
-          <if test="range != null">and t.transaction_date between #{range.key} and #{range.value}</if>
+          <if test="rangeFrom != null &amp;&amp; rangeTo != null">and t.transaction_date between #{rangeFrom} and #{rangeTo}</if>
           <if test="category != null">and c.name_en = #{category}</if>
           order by t.transaction_date desc
           limit #{limit}
@@ -66,7 +66,8 @@ public interface TransactionDao {
     @Param("description") @Nullable String description,
     @Param("maxAmount") @Nullable BigDecimal maxAmount,
     @Param("minAmount") @Nullable BigDecimal minAmount,
-    @Param("range") @Nullable Map.Entry<OffsetDateTime, OffsetDateTime> transactionRange,
+    @Param("rangeFrom") @Nullable OffsetDateTime transactionRangeFrom,
+    @Param("rangeTo") @Nullable OffsetDateTime transactionRangeTo,
     @Param("category") @Nullable String categoryNameEn,
     @Param("limit") int limit,
     @Param("offset") int offset

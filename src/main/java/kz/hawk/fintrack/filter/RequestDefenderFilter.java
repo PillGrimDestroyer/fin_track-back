@@ -58,7 +58,15 @@ public class RequestDefenderFilter extends OncePerRequestFilter {
       body = requestWrapper.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
       body = body.isBlank() ? "{}" : body;
     } else {
-      body = Json.toJson(requestWrapper.getParameterMap());
+      var params      = new HashMap<String, String>();
+      var enumeration = requestWrapper.getParameterNames();
+
+      while (enumeration.hasMoreElements()) {
+        var paramName = enumeration.nextElement();
+        params.put(paramName, requestWrapper.getParameter(paramName));
+      }
+
+      body = Json.toJson(params);
     }
 
     try {
