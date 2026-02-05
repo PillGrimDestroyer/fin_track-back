@@ -1,6 +1,7 @@
 package kz.hawk.fintrack.exception.handler;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @NotNull
@@ -35,6 +37,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                    .collect(Collectors.toList());
 
     body.put("errors", errors);
+
+    log.error("Validation error: {}", errors);
+    ex.printStackTrace();
 
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
