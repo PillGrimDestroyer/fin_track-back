@@ -1,8 +1,8 @@
 package kz.hawk.fintrack.exception.handler;
 
 import jakarta.validation.constraints.NotNull;
+import kotlin.Pair;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -33,13 +33,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     var errors = ex.getBindingResult()
                    .getFieldErrors()
                    .stream()
-                   .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                   .collect(Collectors.toList());
+                   .map(x -> new Pair<>(x.getDefaultMessage(), x.toString()))
+                   .toList();
 
-    body.put("errors", errors);
-
-    log.error("Validation error: {}", errors);
-    ex.printStackTrace();
+    body.put("errors", errors.stream().map(Pair::getFirst).collect(Collectors.toList()));
+    log.error("Validation error: {}", errors.stream().map(Pair::getSecond).collect(Collectors.toList()));
 
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }

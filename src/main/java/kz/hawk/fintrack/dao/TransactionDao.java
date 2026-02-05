@@ -42,7 +42,8 @@ public interface TransactionDao {
           <if test="description != null">and t.description like '%' || #{description} || '%'</if>
           <if test="maxAmount != null">and t.amount &lt;= #{maxAmount}</if>
           <if test="minAmount != null">and t.amount &gt;= #{minAmount}</if>
-          <if test="rangeFrom != null &amp;&amp; rangeTo != null">and t.transaction_date between #{rangeFrom} and #{rangeTo}</if>
+          <if test="rangeFrom != null">and t.transaction_date &gt;= #{rangeFrom}</if>
+          <if test="rangeTo != null">and t.transaction_date &lt;= #{rangeTo}</if>
           <if test="category != null">and c.name_en = #{category}</if>
           order by t.transaction_date desc
           limit #{limit}
