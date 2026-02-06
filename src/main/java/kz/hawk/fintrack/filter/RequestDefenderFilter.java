@@ -54,7 +54,7 @@ public class RequestDefenderFilter extends OncePerRequestFilter {
     var    requestWrapper = new MultiReadHttpServletRequestWrapper(request);
     String body;
 
-    if ("post".equalsIgnoreCase(requestWrapper.getMethod())) {
+    if ("post".equalsIgnoreCase(requestWrapper.getMethod()) || "put".equalsIgnoreCase(requestWrapper.getMethod())) {
       body = requestWrapper.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
       body = body.isBlank() ? "{}" : body;
     } else {

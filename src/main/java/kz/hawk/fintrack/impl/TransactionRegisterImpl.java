@@ -88,22 +88,23 @@ public class TransactionRegisterImpl implements TransactionRegister {
 
   @Override
   @Transactional
-  public void updateTransaction(UUID id, UpdateTransactionRequest request) {
+  public TransactionResponse updateTransaction(UUID id, UpdateTransactionRequest request) {
     boolean isBelongToUser = transactionDao.isBelongToUser(id, sessionRegister.currentUserId());
 
     if (!isBelongToUser) {
       throw new IllegalArgumentException("Transaction does not belong to the current user");
     }
 
-    boolean isCategoryExist = Optional.ofNullable(request.getCategoryId())
-                                      .map(categoryId -> categoryDao.isExist(categoryId, sessionRegister.currentUserId()))
-                                      .orElse(false);
+    if (request.getCategoryId() != null) {
+      boolean isCategoryExist = categoryDao.isExist(request.getCategoryId(), sessionRegister.currentUserId());
 
-    if (!isCategoryExist) {
-      throw new IllegalArgumentException("Category does not exist");
+      if (!isCategoryExist) {
+        throw new IllegalArgumentException("Category does not exist");
+      }
     }
 
     transactionDao.update(id, request);
+    return transactionMapper.toResponse(transactionDao.getById(id));
   }
 
   private @Nullable String trimIfNotBlank(@Nullable String value) {

@@ -40,8 +40,8 @@ public class TransactionController {
   }
 
   @PutMapping("/{id}")
-  public void updateTransaction(@PathVariable UUID id, @Valid @RequestBody UpdateTransactionRequest request) {
-    transactionRegister.updateTransaction(id, request);
+  public @ResponseBody TransactionResponse updateTransaction(@PathVariable UUID id, @Valid @RequestBody UpdateTransactionRequest request) {
+    return transactionRegister.updateTransaction(id, request);
   }
 
 }

@@ -51,7 +51,7 @@ public interface TransactionDao {
           offset #{offset}
           </script>
           """)
-  @Results({
+  @Results(id = "transactionCategoryJoiningResultMap", value = {
     @Result(column = "id", property = "id", id = true),
     @Result(column = "amount", property = "amount"),
     @Result(column = "type", property = "type"),
@@ -89,6 +89,7 @@ public interface TransactionDao {
           <script>
               update transactions
               <set>
+                  <if test="id != null">updated_at = now(),</if>
                   <if test="request.description != null">description = #{request.description},</if>
                   <if test="request.amount != null">amount = #{request.amount},</if>
                   <if test="request.transactionDate != null">transaction_date = #{request.transactionDate},</if>
@@ -99,5 +100,15 @@ public interface TransactionDao {
           </script>
           """)
   void update(@Param("id") UUID id, @Param("request") UpdateTransactionRequest request);
+
+  @Select("""
+          select t.*,
+              c.id as c_id, c.name_ru as c_name_ru, c.name_en as c_name_en, c.icon as c_icon, c.user_id as c_user_id, c.created_at as c_created_at
+          from transactions t
+              left join categories c on c.id = t.category_id
+          where t.id = #{id}
+          """)
+  @ResultMap("transactionCategoryJoiningResultMap")
+  TransactionDto getById(@Param("id") UUID id);
 
 }

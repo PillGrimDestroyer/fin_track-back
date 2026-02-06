@@ -22,5 +22,5 @@ public interface TransactionRegister {
 
   void deleteTransaction(UUID id);
 
-  void updateTransaction(UUID id, @Valid UpdateTransactionRequest request);
+  TransactionResponse updateTransaction(UUID id, @Valid UpdateTransactionRequest request);
 }
