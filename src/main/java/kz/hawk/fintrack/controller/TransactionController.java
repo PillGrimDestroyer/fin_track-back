@@ -3,6 +3,7 @@ package kz.hawk.fintrack.controller;
 
 import kz.hawk.fintrack.model.request.TransactionFilteredDataSliceRequest;
 import kz.hawk.fintrack.model.request.TransactionRequest;
+import kz.hawk.fintrack.model.request.UpdateTransactionRequest;
 import kz.hawk.fintrack.model.response.TransactionResponse;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author megam
@@ -30,6 +32,16 @@ public class TransactionController {
   @GetMapping("/filtered-data-slice")
   public @ResponseBody List<TransactionResponse> filteredDataSlice(TransactionFilteredDataSliceRequest request) {
     return transactionRegister.filteredDataSlice(request);
+  }
+
+  @DeleteMapping("/{id}")
+  public void deleteTransaction(@PathVariable UUID id) {
+    transactionRegister.deleteTransaction(id);
+  }
+
+  @PutMapping("/{id}")
+  public void updateTransaction(@PathVariable UUID id, @Valid @RequestBody UpdateTransactionRequest request) {
+    transactionRegister.updateTransaction(id, request);
   }
 
 }

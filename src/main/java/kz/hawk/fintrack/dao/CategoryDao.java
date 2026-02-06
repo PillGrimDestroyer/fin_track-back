@@ -16,7 +16,7 @@ public interface CategoryDao {
 
   @Insert(
     "insert into categories (name_ru, name_en, icon, user_id) " +
-      "values (#{nameRu}, #{nameEn}, #{icon}, #{user.id})"
+    "values (#{nameRu}, #{nameEn}, #{icon}, #{user.id})"
   )
   void createCategory(CategoryDto category);
 
@@ -32,4 +32,8 @@ public interface CategoryDao {
     @Result(column = "user_id", property = "user", one = @One(select = "kz.hawk.fintrack.dao.UserDao.getById", fetchType = FetchType.LAZY))
   })
   List<CategoryDto> getAllByUserId(@Param("userId") UUID userId);
+
+  @Select("select exists(select 1 from categories where id = #{id} and user_id = #{userId})")
+  boolean isExist(@Param("id") UUID id, @Param("userId") UUID userId);
+
 }

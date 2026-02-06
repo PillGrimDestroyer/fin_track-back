@@ -3,6 +3,7 @@ package kz.hawk.fintrack.dao;
 
 import kz.hawk.fintrack.model.dao.TransactionDto;
 import kz.hawk.fintrack.model.enums.Transaction;
+import kz.hawk.fintrack.model.request.UpdateTransactionRequest;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 import org.jetbrains.annotations.NotNull;
@@ -22,8 +23,8 @@ public interface TransactionDao {
 
   @Insert(
     "insert into transactions " +
-      "(amount, type, description, transaction_date, user_id, category_id) " +
-      "values (#{amount}, #{type}, #{description}, #{transactionDate}, #{user.id}, #{category.id})"
+    "(amount, type, description, transaction_date, user_id, category_id) " +
+    "values (#{amount}, #{type}, #{description}, #{transactionDate}, #{user.id}, #{category.id})"
   )
   @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
   void insert(TransactionDto transaction);
@@ -73,5 +74,30 @@ public interface TransactionDao {
     @Param("limit") int limit,
     @Param("offset") int offset
   );
+
+  @Select("""
+          select exists (
+            select 1 from transactions where id = #{transactionId} and user_id = #{userId}
+          )
+          """)
+  boolean isBelongToUser(@Param("transactionId") UUID transactionId, @Param("userId") UUID userId);
+
+  @Delete("delete from transactions where id = #{id}")
+  void delete(@Param("id") UUID id);
+
+  @Update("""
+          <script>
+              update transactions
+              <set>
+                  <if test="request.description != null">description = #{request.description},</if>
+                  <if test="request.amount != null">amount = #{request.amount},</if>
+                  <if test="request.transactionDate != null">transaction_date = #{request.transactionDate},</if>
+                  <if test="request.categoryId != null">category_id = #{request.categoryId},</if>
+                  <if test="request.type != null">type = #{request.type}</if>
+              </set>
+              where id = #{id}
+          </script>
+          """)
+  void update(@Param("id") UUID id, @Param("request") UpdateTransactionRequest request);
 
 }
