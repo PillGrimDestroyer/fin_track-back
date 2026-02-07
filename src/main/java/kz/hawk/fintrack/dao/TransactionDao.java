@@ -1,16 +1,12 @@
 package kz.hawk.fintrack.dao;
 
 
+import kz.hawk.fintrack.model.TransactionDataSliceFilter;
 import kz.hawk.fintrack.model.dao.TransactionDto;
-import kz.hawk.fintrack.model.enums.Transaction;
 import kz.hawk.fintrack.model.request.UpdateTransactionRequest;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +44,7 @@ public interface TransactionDao {
           <if test="category != null">and c.name_en = #{category}</if>
           order by t.transaction_date desc
           limit #{limit}
-          offset #{offset}
+          offset (#{page} - 1) * #{limit}
           </script>
           """)
   @Results(id = "transactionCategoryJoiningResultMap", value = {
@@ -62,18 +58,25 @@ public interface TransactionDao {
     @Result(column = "c_id", property = "category", one = @One(resultMap = "kz.hawk.fintrack.dao.CategoryDao.categoryResultMap", columnPrefix = "c_")),
     @Result(column = "user_id", property = "user", one = @One(select = "kz.hawk.fintrack.dao.UserDao.getById", fetchType = FetchType.LAZY))
   })
-  List<TransactionDto> filteredDataSlice(
-    @Param("userId") @NotNull UUID userId,
-    @Param("type") @Nullable Transaction transactionType,
-    @Param("description") @Nullable String description,
-    @Param("maxAmount") @Nullable BigDecimal maxAmount,
-    @Param("minAmount") @Nullable BigDecimal minAmount,
-    @Param("rangeFrom") @Nullable OffsetDateTime transactionRangeFrom,
-    @Param("rangeTo") @Nullable OffsetDateTime transactionRangeTo,
-    @Param("category") @Nullable String categoryNameEn,
-    @Param("limit") int limit,
-    @Param("offset") int offset
-  );
+  List<TransactionDto> filteredDataSlice(TransactionDataSliceFilter filter);
+
+  @Select("""
+          <script>
+          select ceil(count(t.id)::numeric / #{limit})
+              from transactions t
+               left join categories c on c.id = t.category_id
+             where t.user_id = #{userId}
+          <if test="type != null">and t.type = #{type}</if>
+          <if test="description != null">and t.description like '%' || #{description} || '%'</if>
+          <if test="maxAmount != null">and t.amount &lt;= #{maxAmount}</if>
+          <if test="minAmount != null">and t.amount &gt;= #{minAmount}</if>
+          <if test="rangeFrom != null">and t.transaction_date &gt;= #{rangeFrom}</if>
+          <if test="rangeTo != null">and t.transaction_date &lt;= #{rangeTo}</if>
+          <if test="category != null">and c.name_en = #{category}</if>
+          offset (#{page} - 1) * #{limit}
+          </script>
+          """)
+  int filteredDataSliceTotalPages(TransactionDataSliceFilter filter);
 
   @Select("""
           select exists (

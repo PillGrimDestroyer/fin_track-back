@@ -4,22 +4,21 @@ package kz.hawk.fintrack.impl;
 import kz.hawk.fintrack.dao.CategoryDao;
 import kz.hawk.fintrack.dao.TransactionDao;
 import kz.hawk.fintrack.mapper.TransactionMapper;
+import kz.hawk.fintrack.model.TransactionDataSliceFilter;
 import kz.hawk.fintrack.model.dao.CategoryDto;
 import kz.hawk.fintrack.model.dao.TransactionDto;
 import kz.hawk.fintrack.model.dao.UserDto;
 import kz.hawk.fintrack.model.request.TransactionFilteredDataSliceRequest;
 import kz.hawk.fintrack.model.request.TransactionRequest;
 import kz.hawk.fintrack.model.request.UpdateTransactionRequest;
+import kz.hawk.fintrack.model.response.TransactionDataSliceResponse;
 import kz.hawk.fintrack.model.response.TransactionResponse;
 import kz.hawk.fintrack.register.SessionRegister;
 import kz.hawk.fintrack.register.TransactionRegister;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -57,21 +56,17 @@ public class TransactionRegisterImpl implements TransactionRegister {
 
   @Override
   @Transactional
-  public List<TransactionResponse> filteredDataSlice(TransactionFilteredDataSliceRequest request) {
-    return transactionDao.filteredDataSlice(
-                           sessionRegister.currentUserId(),
-                           request.getTransactionType(),
-                           trimIfNotBlank(request.getDescription()),
-                           request.getMaxAmount(),
-                           request.getMinAmount(),
-                           request.getTransactionRangeFrom(),
-                           request.getTransactionRangeTo(),
-                           trimIfNotBlank(request.getCategoryNameEn()),
-                           request.getLimit(),
-                           request.getOffset()
-                         ).stream()
-                         .map(transactionMapper::toResponse)
-                         .collect(Collectors.toList());
+  public TransactionDataSliceResponse filteredDataSlice(TransactionFilteredDataSliceRequest request) {
+    TransactionDataSliceResponse response = new TransactionDataSliceResponse();
+    TransactionDataSliceFilter   filter   = transactionMapper.toFilter(request, sessionRegister);
+
+    response.setContent(transactionDao.filteredDataSlice(filter).stream()
+                                      .map(transactionMapper::toResponse)
+                                      .collect(Collectors.toList()));
+
+    response.setTotalPages(transactionDao.filteredDataSliceTotalPages(filter));
+
+    return response;
   }
 
   @Override
@@ -105,13 +100,6 @@ public class TransactionRegisterImpl implements TransactionRegister {
 
     transactionDao.update(id, request);
     return transactionMapper.toResponse(transactionDao.getById(id));
-  }
-
-  private @Nullable String trimIfNotBlank(@Nullable String value) {
-    return Optional.ofNullable(value)
-                   .filter(x -> !x.isBlank())
-                   .map(String::trim)
-                   .orElse(null);
   }
 
 }
