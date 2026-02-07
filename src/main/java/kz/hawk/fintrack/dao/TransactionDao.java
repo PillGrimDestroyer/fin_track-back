@@ -73,7 +73,6 @@ public interface TransactionDao {
           <if test="rangeFrom != null">and t.transaction_date &gt;= #{rangeFrom}</if>
           <if test="rangeTo != null">and t.transaction_date &lt;= #{rangeTo}</if>
           <if test="category != null">and c.name_en = #{category}</if>
-          offset (#{page} - 1) * #{limit}
           </script>
           """)
   int filteredDataSliceTotalPages(TransactionDataSliceFilter filter);
