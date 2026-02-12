@@ -69,6 +69,8 @@ public class AuthorizeRegisterImpl implements AuthorizeRegister {
     var resp = new AuthenticationResponse();
 
     resp.setEmail(email);
+    resp.setFirstName(user.getFirstName());
+    resp.setLastName(user.getLastName());
     resp.setToken(token);
     resp.setRefreshToken(refreshToken);
 
