@@ -3,13 +3,16 @@ package kz.hawk.fintrack.impl;
 
 import kz.hawk.fintrack.dao.CategoryDao;
 import kz.hawk.fintrack.mapper.CategoryMapper;
+import kz.hawk.fintrack.model.request.CategoryRequest;
 import kz.hawk.fintrack.model.response.CategoryResponse;
 import kz.hawk.fintrack.register.CategoryRegister;
 import kz.hawk.fintrack.register.SessionRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +32,43 @@ public class CategoryRegisterImpl implements CategoryRegister {
     return categoryDao.getAllByUserId(sessionRegister.currentUserId()).stream()
                       .map(categoryMapper::toResponse)
                       .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional
+  public void delete(UUID id) {
+    boolean isExist = categoryDao.isExist(id, sessionRegister.currentUserId());
+
+    if (!isExist) {
+      throw new IllegalArgumentException("Category not found");
+    }
+
+    boolean isDefault = categoryDao.isDefault(id, sessionRegister.currentUserId());
+
+    if (isDefault) {
+      throw new IllegalArgumentException("Default category can not be deleted");
+    }
+
+    categoryDao.delete(id);
+  }
+
+  @Override
+  @Transactional
+  public CategoryResponse update(UUID id, CategoryRequest request) {
+    boolean isExist = categoryDao.isExist(id, sessionRegister.currentUserId());
+
+    if (!isExist) {
+      throw new IllegalArgumentException("Category not found");
+    }
+
+    boolean isDefault = categoryDao.isDefault(id, sessionRegister.currentUserId());
+
+    if (isDefault) {
+      throw new IllegalArgumentException("Default category can not be changed");
+    }
+
+    categoryDao.update(id, request);
+    return categoryMapper.toResponse(categoryDao.getById(id));
   }
 
 }
