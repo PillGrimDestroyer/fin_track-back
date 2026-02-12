@@ -19,6 +19,7 @@ public interface CategoryDao {
     "insert into categories (name_ru, name_en, icon, user_id, is_default) " +
     "values (#{nameRu}, #{nameEn}, #{icon}, #{user.id}, #{isDefault})"
   )
+  @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
   void createCategory(CategoryDto category);
 
   @Select(

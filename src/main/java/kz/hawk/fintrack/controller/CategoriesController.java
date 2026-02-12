@@ -37,8 +37,8 @@ public class CategoriesController {
   }
 
   @PostMapping
-  public void add(@RequestBody CategoryRequest request) {
-    categoryRegister.add(request);
+  public @ResponseBody CategoryResponse add(@RequestBody CategoryRequest request) {
+    return categoryRegister.add(request);
   }
 
 }

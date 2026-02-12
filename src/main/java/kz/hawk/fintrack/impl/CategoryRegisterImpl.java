@@ -79,8 +79,12 @@ public class CategoryRegisterImpl implements CategoryRegister {
 
   @Override
   @Transactional
-  public void add(CategoryRequest request) {
-    categoryDao.createCategory(categoryMapper.toDto(request, sessionRegister));
+  public CategoryResponse add(CategoryRequest request) {
+    CategoryDto dto = categoryMapper.toDto(request, sessionRegister);
+
+    categoryDao.createCategory(dto);
+
+    return categoryMapper.toResponse(categoryDao.getById(dto.getId()));
   }
 
 }
