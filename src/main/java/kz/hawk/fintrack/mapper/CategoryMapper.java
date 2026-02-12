@@ -29,6 +29,7 @@ public interface CategoryMapper {
     userDto.setId(sessionRegister.currentUserId());
 
     dto.setUser(userDto);
+    dto.setIsDefault(false);
   }
 
 }
