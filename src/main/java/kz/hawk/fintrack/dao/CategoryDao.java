@@ -23,7 +23,7 @@ public interface CategoryDao {
   void createCategory(CategoryDto category);
 
   @Select(
-    "select * from categories where user_id = #{userId}"
+    "select * from categories where user_id = #{userId} order by updated_at desc"
   )
   @Results(id = "categoryResultMap", value = {
     @Result(column = "id", property = "id", id = true),
