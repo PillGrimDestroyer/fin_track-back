@@ -71,4 +71,9 @@ public interface CategoryDao {
   @ResultMap("categoryResultMap")
   CategoryDto getById(@Param("id") UUID id);
 
+  @Select(
+    "select * from categories where user_id = #{userId} and is_default = true"
+  )
+  CategoryDto getDefault(@Param("userId") UUID userId);
+
 }

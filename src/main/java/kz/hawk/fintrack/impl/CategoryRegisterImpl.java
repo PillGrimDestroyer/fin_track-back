@@ -2,7 +2,10 @@ package kz.hawk.fintrack.impl;
 
 
 import kz.hawk.fintrack.dao.CategoryDao;
+import kz.hawk.fintrack.dao.TransactionDao;
 import kz.hawk.fintrack.mapper.CategoryMapper;
+import kz.hawk.fintrack.model.dao.CategoryDto;
+import kz.hawk.fintrack.model.dao.TransactionDto;
 import kz.hawk.fintrack.model.request.CategoryRequest;
 import kz.hawk.fintrack.model.response.CategoryResponse;
 import kz.hawk.fintrack.register.CategoryRegister;
@@ -26,6 +29,7 @@ public class CategoryRegisterImpl implements CategoryRegister {
   private final CategoryDao     categoryDao;
   private final SessionRegister sessionRegister;
   private final CategoryMapper  categoryMapper;
+  private final TransactionDao  transactionDao;
 
   @Override
   public List<CategoryResponse> all() {
@@ -49,6 +53,12 @@ public class CategoryRegisterImpl implements CategoryRegister {
       throw new IllegalArgumentException("Default category can not be deleted");
     }
 
+    CategoryDto defaultCategory = categoryDao.getDefault(sessionRegister.currentUserId());
+    List<UUID> transactionIds = transactionDao.getAllByCategoryId(id).stream()
+                                              .map(TransactionDto::getId)
+                                              .toList();
+
+    transactionDao.resetCategoryToDefault(transactionIds, defaultCategory.getId());
     categoryDao.delete(id);
   }
 

@@ -113,4 +113,14 @@ public interface TransactionDao {
   @ResultMap("transactionCategoryJoiningResultMap")
   TransactionDto getById(@Param("id") UUID id);
 
+  @Select(
+    "select * from transactions where category_id = #{id}"
+  )
+  List<TransactionDto> getAllByCategoryId(@Param("id") UUID id);
+
+  @Update("""
+          update transactions set category_id = #{categoryId} where id in (#{list})
+          """)
+  void resetCategoryToDefault(@Param("list") List<UUID> transactionIds, @Param("categoryId") UUID defaultCategoryId);
+
 }
