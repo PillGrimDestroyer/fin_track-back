@@ -17,6 +17,8 @@ public class CategoryResponse {
   private String         nameRu;
   private String         nameEn;
   private String         icon;
+  private Boolean        isDefault;
   private OffsetDateTime createdAt;
+  private OffsetDateTime updatedAt;
 
 }

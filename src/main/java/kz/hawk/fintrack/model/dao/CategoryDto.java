@@ -20,15 +20,22 @@ public class CategoryDto {
   private String         nameRu;
   private String         nameEn;
   private String         icon;
+  private Boolean        isDefault;
   private OffsetDateTime createdAt;
+  private OffsetDateTime updatedAt;
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
   private UserDto        user;
 
   public CategoryDto(String nameRu, String nameEn, String icon, UserDto user) {
+    this(nameRu, nameEn, icon, user, false);
+  }
+
+  public CategoryDto(String nameRu, String nameEn, String icon, UserDto user, boolean isDefault) {
     this.nameRu = nameRu;
     this.nameEn = nameEn;
     this.icon = icon;
     this.user = user;
+    this.isDefault = isDefault;
   }
 }

@@ -93,7 +93,7 @@ public class AuthorizeRegisterImpl implements AuthorizeRegister {
     user.setLastName(request.getLastName());
 
     userDao.insertUser(user);
-    createDefaultCategories(user);
+    createFirstCategories(user);
 
     return user;
   }
@@ -111,8 +111,9 @@ public class AuthorizeRegisterImpl implements AuthorizeRegister {
     return authenticate(authenticationRequest);
   }
 
-  private void createDefaultCategories(UserDto user) {
+  private void createFirstCategories(UserDto user) {
     List<CategoryDto> defaults = List.of(
+      new CategoryDto("Другое", "Other", "bi-asterisk", user, true),
       new CategoryDto("Продукты", "Groceries", "bi-cart", user),
       new CategoryDto("Транспорт", "Transport", "bi-car-front", user),
       new CategoryDto("Жилье", "Housing", "bi-house", user),
