@@ -36,4 +36,9 @@ public class CategoriesController {
     return categoryRegister.update(id, request);
   }
 
+  @PostMapping
+  public void add(@RequestBody CategoryRequest request) {
+    categoryRegister.add(request);
+  }
+
 }

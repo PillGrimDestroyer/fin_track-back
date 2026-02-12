@@ -19,4 +19,6 @@ public interface CategoryRegister {
 
   CategoryResponse update(UUID id, CategoryRequest request);
 
+  void add(CategoryRequest request);
+
 }
