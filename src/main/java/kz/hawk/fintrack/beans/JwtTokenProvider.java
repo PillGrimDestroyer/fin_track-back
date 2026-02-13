@@ -67,6 +67,7 @@ public class JwtTokenProvider {
   public String resolveToken(HttpServletRequest request) {
     return Optional.ofNullable(request.getHeader(jwtConfig.header()))
                    .filter(x -> !x.isBlank())
+                   .filter(x -> x.startsWith("Bearer "))
                    .map(x -> x.substring("Bearer ".length()))
                    .orElse(null);
   }
