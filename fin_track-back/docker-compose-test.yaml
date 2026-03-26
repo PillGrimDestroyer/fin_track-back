@@ -1,12 +1,4 @@
-version: "3.9"
-
-networks:
-  default:
-    external: true
-    name: defender_default
-
 services:
-
   postgres:
     image: postgres:14.0
     container_name: fin_track_postgres
@@ -35,3 +27,30 @@ services:
       DB_USER: "request_defender"
       DB_PASS: "111"
       SECRET_DAYS: "1"
+
+  app:
+    image: kz.hawk/fin_track-back:latest
+    container_name: fin_track-back
+    restart: no
+    depends_on:
+      - postgres
+      - request-defender
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./volumes/fin_track-back.d:/home/cnb/fin_track-back.d
+    environment:
+      DB_HOST: fin_track_postgres
+      DB_PORT: 5432
+      DB_NAME: fin_track__prod
+      DB_USER: fin_track
+      DB_PASS: 111
+      JWT_SECRET_KEY: The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size)
+      JWT_HEADER: Authorization
+      JWT_VALID_TIME: 1800
+      JWT_REFRESH_VALID_TIME: 604800
+      REQUEST_DEFENDER_FAKE: false
+      REQUEST_DEFENDER_HOST: request-defender
+      REQUEST_DEFENDER_PORT: 8080
+      REQUEST_DEFENDER_SECURITY_HEADER: Security
+      REQUEST_DEFENDER_TOKEN_HEADER: RequestToken
